@@ -5,7 +5,10 @@
 """
 import logging
 import re
-from typing import List, Tuple
+import os
+import mysql.connector
+from mysql.connector import connection
+from typing import List, Tuple, Optional
 
 
 PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
@@ -47,3 +50,26 @@ def get_logger() -> logging.Logger:
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
     return logger
+
+
+def get_db() -> Optional[connection.MySQLConnection]:
+    """Connects to the database and returns the connection object"""
+    db_username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    db_password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    db_host = os.getenv("PERSONAL_DATA_SB_HOST", "localhost")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    if not db_name:
+        raise ValueError("The environment variable\
+                         PERSONAL_DATA_DB_NAME is not set")
+    try:
+        conn = mysql.connector.connect(
+                user=db_username,
+                password=db_password,
+                host=db_host,
+                database=db_name
+                )
+        return conn
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
