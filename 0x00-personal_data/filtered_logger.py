@@ -73,3 +73,25 @@ def get_db() -> Optional[connection.MySQLConnection]:
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
+
+
+def main():
+    """Retrieves all rows from users table"""
+    db_connect = get_db()
+    cursor = database.cursor()
+    query = "SELECT * FROM users;"
+    cursor.execute(query)
+    cols = [col[0] for col in cursor.description]
+    logger = get_logger()
+
+    for row in cursor:
+        row_str = ''.join(f'{column}={value}{RedactingFormatter.SEPARATOR} '
+                          for col, value in zip(cols, row))
+        logger.info(row_str)
+
+    cursor.close()
+    db_connect.close()
+
+
+if __name__ == "__main__":
+    main()
