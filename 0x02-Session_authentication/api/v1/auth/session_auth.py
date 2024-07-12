@@ -9,6 +9,7 @@ import uuid
 
 class SessionAuth(Auth):
     """Session class that inherits from Auth class"""
+
     user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
@@ -46,7 +47,7 @@ class SessionAuth(Auth):
         return User.get(user_id)
 
     def destroy_session(self, request=None):
-        """Deletes user session / logs out user"""
+        """Deletes user session and logs out user"""
         if request is None:
             return False
         session_id = self.session_cookie(request)
