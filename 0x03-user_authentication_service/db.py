@@ -42,7 +42,6 @@ class DB:
         """Finds a user based given kwargs"""
         try:
             user = self._session.query(User).filter_by(**kwargs).first()
-            return user
         except Exception:
             raise InvalidRequestError
         if user is None:
@@ -57,7 +56,7 @@ class DB:
             raise NoResultFound
 
         for k, v in kwargs.items():
-            if not hasattr(user, k):
+            if k not in user.__dict__.keys():
                 raise ValueError
             setattr(user, k, v)
         self._session.add(user)
