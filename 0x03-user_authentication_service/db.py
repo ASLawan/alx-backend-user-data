@@ -53,7 +53,7 @@ class DB:
         """Updates user attributes if user is found"""
         try:
             user = self.find_user_by(id=user_id)
-        except NoResultFound:
+        except Exception:
             raise NoResultFound
 
         for k, v in kwargs.items():
