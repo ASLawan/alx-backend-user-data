@@ -7,7 +7,7 @@
 import bcrypt
 import uuid
 from db import DB
-from typing import Optional
+from typing import Union
 from sqlalchemy.orm.exc import NoResultFound
 from user import User
 
@@ -20,7 +20,7 @@ def _hash_password(password: str) -> bytes:
     return hashedpwd
 
 
-def _generate_uuid():
+def _generate_uuid() -> str:
     """Generates a new uuid and returns it as a string"""
     return str(uuid.uuid4())
 
@@ -39,9 +39,8 @@ class Auth:
             raise ValueError(f"User {email} already exists")
         except NoResultFound:
             hashedpwd = _hash_password(password)
-            new_user = self._db.add_user(email=email,
-                                         hashed_password=hashedpwd)
-            return new_user
+            new_user = self._db.add_user(email, hashedpwd)
+        return new_user
 
     def valid_login(self, email: str, password: str) -> bool:
         """Checks if password is valid by comparing the two hashes"""
@@ -58,15 +57,13 @@ class Auth:
         """Creates a session ID for a user and store in the database"""
         try:
             user = self._db.find_user_by(email=email)
-        except NoResultFound:
+            ssn_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=ssn_id)
+            return ssn_id
+        except NoResultFoundd:
             return None
 
-        session_id = _generate_uuid()
-        self._db.update_user(user.id, session_id=session_id)
-        return session_id
-
-    def get_user_from_session_id(self, session_id:
-                                 Optional[str]) -> Optional[User]:
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """Gets user from session id"""
         if session_id is None:
             return None
@@ -82,7 +79,7 @@ class Auth:
             user = self._db.find_user_by(id=user_id)
             self._db.update_user(user.id, session_id=None)
         except NoResultFound:
-            pass
+            return None
 
     def get_reset_password_token(self, email: str) -> str:
         """Generates a reset password token for the user"""
