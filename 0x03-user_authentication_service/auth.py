@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python3
 """
     Module implementing a function that hashes a password
     returns hashed password
