@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
-def index():
+def index() -> str:
     """Defaulf app route with GET method that returns
     json payload"""
     return jsonify({"message": "Bienvenue"})
