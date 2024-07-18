@@ -12,7 +12,7 @@ AUTH = Auth()
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"], strict_slashes=False)
+@app.route("/", methods=["GET"])
 def index():
     """Defaulf app route with GET method that returns
     json payload"""
