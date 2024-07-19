@@ -64,15 +64,15 @@ def login() -> str:
 @app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout() -> str:
     """Logouts user from current session"""
-    session_id = request.cookies.get("session_id")
-    if session_id is None:
+    ssn_id = request.cookies.get("session_id")
+    if ssn_id is None:
         abort(403)
-    user = AUTH.get_user_from_sesssion_id(session_id)
+    user = AUTH.get_user_from_sesssion_id(ssn_id)
     if user is None:
         abort(403)
 
     AUTH.destroy_session(user.id)
-    return redirect(url_for("index"))
+    return redirect(url_for("index")), 302
 
 
 @app.route("/profile", methods=["GET"], strict_slashes=False)
