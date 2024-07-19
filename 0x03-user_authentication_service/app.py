@@ -6,6 +6,12 @@
 from flask import (Flask, jsonify, request, abort,
                    make_response, redirect, url_for)
 from auth import Auth
+import logging
+
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+
 
 AUTH = Auth()
 
@@ -82,7 +88,7 @@ def profile() -> str:
     return jsonify({"email": user.email}), 200
 
 
-@pp.route("/reset_password", methods=["POST"], strict_slashes=False)
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
 def get_reset_password_token():
     """Handles password reset token process for the user"""
     email = request.form.get("email")
