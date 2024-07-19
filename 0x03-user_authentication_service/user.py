@@ -3,8 +3,12 @@
     Module implementing a SQLAlchemy User model
 
 """
+import logging
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+
+logging.basicConfig()
+logging.getLogger('sqlalchemmy.engine').setLevel(logging.WARNING)
 
 
 Base = declarative_base()
