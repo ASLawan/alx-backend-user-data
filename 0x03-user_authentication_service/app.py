@@ -66,9 +66,9 @@ def logout() -> str:
     """Logouts user from current session"""
     ssn_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(ssn_id)
-    if ssn_id is not None and user is None:
+    if ssn_id is not None and user is not None:
         AUTH.destroy_session(user.id)
-        return redirect(url_for("index"))
+        return redirect("/")
     abort(403)
 
 
